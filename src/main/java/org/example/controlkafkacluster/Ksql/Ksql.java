@@ -43,11 +43,24 @@ public class Ksql {
 
         String result = executeCommand(host, KAFKA_STATUS_COMMAND);
 
-        if (result.trim().isEmpty()) {
+        // 8088 포트만 필터링
+        String filteredResult = filterResult(result, "8088");
+
+        if (filteredResult.trim().isEmpty()) {
             return "Kafka KSQL " + host + " 는 현재 실행 중이지 않습니다.";
         } else {
-            return "Kafka KSQL " + host + " 는 정상적으로 실행 중입니다.\n" + result;
+            return "Kafka KSQL " + host + " 는 정상적으로 실행 중입니다.\n" + filteredResult;
         }
+    }
+
+    private String filterResult(String result, String port) {
+        StringBuilder filtered = new StringBuilder();
+        for (String line : result.split("\n")) {
+            if (line.contains(port)) {
+                filtered.append(line.trim()).append("\n");
+            }
+        }
+        return filtered.toString();
     }
 
     private String getHost(int id) {

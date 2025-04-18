@@ -67,8 +67,6 @@ public class Schema {
         return filtered.toString();
     }
 
-
-
     private String getHost(int id) {
         return switch (id) {
             case 1 -> SCHEMA_1_HOST;
