@@ -23,6 +23,7 @@ public class Broker {
     private static final String KAFKA_START_COMMAND = dotenv.get("BROKER_START_COMMAND");
     private static final String KAFKA_STOP_COMMAND = dotenv.get("BROKER_STOP_COMMAND");
     private static final String KAFKA_STATUS_COMMAND = dotenv.get("BROKER_STATUS_COMMAND");
+    private static final String KAFKA_PARTITION_COMMAND = dotenv.get("BROKER_PARTITION_COMMAND");
 
     @PostMapping("/start/{id}")
     public String start(@PathVariable int id) {
@@ -62,6 +63,34 @@ public class Broker {
         }
 
         return filtered.toString();
+    }
+
+    @PostMapping("/partition/{id}")
+    public String partitionInfo(@PathVariable int id) {
+        String host = getHost(id);
+        if (host == null) return "브로커는 1 ~ 3번까지 있습니다.";
+
+        // 디렉토리 내 파일 목록을 보고, kafka-topics 실행
+        String command = "bash -c 'cd /engn/confluent/bin && ./kafka-topics --describe'";
+
+        String result = executeCommand(host, command);
+        return "Kafka Broker " + host + "\n\n디렉토리 확인 및 파티션 정보:\n" + result;
+    }
+
+    private String parsePartitionInfo(String result) {
+        StringBuilder partitionInfo = new StringBuilder();
+
+        // 결과를 한 줄씩 확인하여 파티션 정보 추출
+        for (String line : result.split("\n")) {
+            if (line.contains("mysql-user")) {  // 특정 토픽에 대한 정보만 필터링
+                String[] parts = line.split("\\s+");
+                String partition = parts[0];
+                String leader = parts[1];
+                partitionInfo.append("파티션: ").append(partition)
+                        .append(", 리더: ").append(leader).append("\n");
+            }
+        }
+        return partitionInfo.toString();
     }
 
     private String getHost(int id) {

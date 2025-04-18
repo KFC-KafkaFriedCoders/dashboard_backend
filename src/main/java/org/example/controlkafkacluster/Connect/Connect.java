@@ -69,8 +69,6 @@ public class Connect {
         return filtered.toString();
     }
 
-
-
     @PostMapping("/status/{id}/{connectorType}")
     public String connectorStatus(@PathVariable int id, @PathVariable String connectorType) {
         String host = getHost(id);
