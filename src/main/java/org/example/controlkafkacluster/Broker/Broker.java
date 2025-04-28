@@ -77,7 +77,7 @@ public class Broker {
         return "Kafka Broker " + host + "\n\n디렉토리 확인 및 파티션 정보:\n" + result;
     }
 
-    private String parsePartitionInfo(String result) {
+/*    private String parsePartitionInfo(String result) {
         StringBuilder partitionInfo = new StringBuilder();
 
         // 결과를 한 줄씩 확인하여 파티션 정보 추출
@@ -91,7 +91,7 @@ public class Broker {
             }
         }
         return partitionInfo.toString();
-    }
+    }*/
 
     private String getHost(int id) {
         return switch (id) {

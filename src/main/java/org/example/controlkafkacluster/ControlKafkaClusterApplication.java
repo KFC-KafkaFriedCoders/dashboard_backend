@@ -9,5 +9,4 @@ public class ControlKafkaClusterApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ControlKafkaClusterApplication.class, args);
 	}
-
 }
