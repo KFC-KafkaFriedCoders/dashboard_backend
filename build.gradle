@@ -21,7 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
-	maven { url 'https://jitpack.io' }  // JitPack 리포지토리 추가
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
