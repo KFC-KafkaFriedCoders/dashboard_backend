@@ -36,19 +36,14 @@ public class ControlCenter {
     }
 
     @PostMapping("/status/{id}")
-    public String status(@PathVariable int id) {
+    public boolean status(@PathVariable int id) {
         String host = getHost(id);
-        if (host == null) return "컨트롤 센터는 1번만 있습니다.";
+        if (host == null) return false;
 
         String result = executeCommand(host, KAFKA_STATUS_COMMAND);
-
         String filteredResult = filterResult(result, "9021");
 
-        if (filteredResult.trim().isEmpty()) {
-            return "Kafka C3 " + host + " 는 현재 실행 중이지 않습니다.";
-        } else {
-            return "Kafka C3 " + host + " 는 정상적으로 실행 중입니다.\n" + filteredResult;
-        }
+        return !filteredResult.trim().isEmpty();
     }
 
     private String filterResult(String result, String port) {

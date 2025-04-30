@@ -36,19 +36,14 @@ public class Broker {
     }
 
     @PostMapping("/status/{id}")
-    public String status(@PathVariable int id) {
+    public boolean status(@PathVariable int id) {
         String host = getHost(id);
-        if (host == null) return "브로커는 1 ~ 3번까지 있습니다.";
+        if (host == null) return false;
 
         String result = executeCommand(host, KAFKA_STATUS_COMMAND);
-
         String filteredResult = filterResult(result, "9092");
 
-        if (filteredResult.trim().isEmpty()) {
-            return "Kafka Broker " + host + " 는 현재 실행 중이지 않습니다.";
-        } else {
-            return "Kafka Broker " + host + " 는 정상적으로 실행 중입니다.\n" + filteredResult;
-        }
+        return !filteredResult.trim().isEmpty();
     }
 
     private String filterResult(String result, String port) {
@@ -76,22 +71,6 @@ public class Broker {
         String result = executeCommand(host, command);
         return "Kafka Broker " + host + "\n\n디렉토리 확인 및 파티션 정보:\n" + result;
     }
-
-/*    private String parsePartitionInfo(String result) {
-        StringBuilder partitionInfo = new StringBuilder();
-
-        // 결과를 한 줄씩 확인하여 파티션 정보 추출
-        for (String line : result.split("\n")) {
-            if (line.contains("mysql-user")) {  // 특정 토픽에 대한 정보만 필터링
-                String[] parts = line.split("\\s+");
-                String partition = parts[0];
-                String leader = parts[1];
-                partitionInfo.append("파티션: ").append(partition)
-                        .append(", 리더: ").append(leader).append("\n");
-            }
-        }
-        return partitionInfo.toString();
-    }*/
 
     private String getHost(int id) {
         return switch (id) {
